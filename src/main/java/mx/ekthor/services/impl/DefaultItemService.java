@@ -47,6 +47,20 @@ public class DefaultItemService implements ItemService {
         return insert(id, item);
     }
 
+    @Override
+    public Optional<Item> update(String id, ItemBase updatedItem) {
+        Optional<Item> result = getById(id);
+
+        if(result.isPresent()){
+            Item item = result.get();
+            
+            item.setDescription(updatedItem.getDescription());
+            item.setTitle(updatedItem.getTitle());
+        }
+
+        return result;
+    }
+
     private Item insert(String id, ItemBase item){
         Item result = Item
             .builder()

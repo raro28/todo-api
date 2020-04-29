@@ -17,4 +17,6 @@ public interface ItemService {
 	Optional<Item> delete(String id);
 
 	Item upsert(String id, ItemBase item);
+
+	Optional<Item> update(String id, ItemBase item);
 }

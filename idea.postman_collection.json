@@ -120,6 +120,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:8080/items/9e0aa965-f7a9-449c-85b8-a15fed113f4f",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"title\": \"new title\",\n \"description\": \"new description\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/items/9e0aa965-f7a9-449c-85b8-a15fed113f4f",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"items",
+						"9e0aa965-f7a9-449c-85b8-a15fed113f4f"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
