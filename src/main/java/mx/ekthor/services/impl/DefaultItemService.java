@@ -28,23 +28,34 @@ public class DefaultItemService implements ItemService {
 
     @Override
     public Item store(ItemBase item) {
-        Item result = Item
-            .builder()
-                .id(UUID.randomUUID().toString())
-                .title(item.getTitle())
-                .description(item.getDescription())
-            .build();
-
-        ITEMS.getData().add(result);
-
-        return result;
+        return insert(UUID.randomUUID().toString(), item);
     }
 
     @Override
     public Optional<Item> delete(String id) {
         Optional<Item> result = getById(id);
-        
+
         result.ifPresent(item -> ITEMS.getData().remove(item));
+
+        return result;
+    }
+
+    @Override
+    public Item upsert(String id, ItemBase item) {
+        delete(id);
+
+        return insert(id, item);
+    }
+
+    private Item insert(String id, ItemBase item){
+        Item result = Item
+            .builder()
+                .id(id)
+                .title(item.getTitle())
+                .description(item.getDescription())
+            .build();
+
+        ITEMS.getData().add(result);
 
         return result;
     }
