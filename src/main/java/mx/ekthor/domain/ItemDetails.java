@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class ItemBase implements Serializable{
+public class ItemDetails implements Serializable{
 
     private static final long serialVersionUID = -7090373998008749282L;
 

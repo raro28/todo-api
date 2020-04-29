@@ -7,27 +7,27 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import mx.ekthor.domain.Item;
-import mx.ekthor.domain.ItemBase;
+import mx.ekthor.domain.ItemEntity;
+import mx.ekthor.domain.ItemDetails;
 import mx.ekthor.repositories.CrudRepository;
 
 @Component
-public class DefaultItemRepository implements CrudRepository<ItemBase, Item, String> {
-    private static final List<Item> ITEMS = new ArrayList<>();
+public class DefaultItemRepository implements CrudRepository<ItemDetails, ItemEntity, String> {
+    private static final List<ItemEntity> ITEMS = new ArrayList<>();
 
     @Override
-    public List<Item> getAll() {
+    public List<ItemEntity> getAll() {
         return ITEMS;
     }
 
     @Override
-    public Optional<Item> getById(String id) {
+    public Optional<ItemEntity> getById(String id) {
         return ITEMS.stream().filter(item -> item.getId().equals(id)).findFirst();
     }
 
     @Override
-    public Optional<Item> delete(String id) {
-        Optional<Item> result = getById(id);
+    public Optional<ItemEntity> delete(String id) {
+        Optional<ItemEntity> result = getById(id);
 
         result.ifPresent(item -> ITEMS.remove(item));
 
@@ -35,36 +35,36 @@ public class DefaultItemRepository implements CrudRepository<ItemBase, Item, Str
     }
 
     @Override
-    public Optional<Item> update(String id, ItemBase updatedItem) {
-        Optional<Item> result = getById(id);
+    public Optional<ItemEntity> update(String id, ItemDetails details) {
+        Optional<ItemEntity> result = getById(id);
 
         if(result.isPresent()){
-            Item item = result.get();
+            ItemEntity item = result.get();
             
-            item.setDescription(updatedItem.getDescription());
-            item.setTitle(updatedItem.getTitle());
+            item.setDescription(details.getDescription());
+            item.setTitle(details.getTitle());
         }
 
         return result;
     }
 
     @Override
-    public Item insert(ItemBase item) {
-        return insert(UUID.randomUUID().toString(), item);
+    public ItemEntity insert(ItemDetails details) {
+        return insert(UUID.randomUUID().toString(), details);
     }
 
     @Override
-    public Item upsert(String id, ItemBase item) {
+    public ItemEntity upsert(String id, ItemDetails details) {
         delete(id);
-        return insert(id, item);
+        return insert(id, details);
     }
 
-    private Item insert(String id, ItemBase item) {
-        Item result = Item
+    private ItemEntity insert(String id, ItemDetails details) {
+        ItemEntity result = ItemEntity
             .builder()
                 .id(id)
-                .title(item.getTitle())
-                .description(item.getDescription())
+                .title(details.getTitle())
+                .description(details.getDescription())
             .build();
 
         ITEMS.add(result);

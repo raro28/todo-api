@@ -14,7 +14,7 @@ public interface CrudRepository<D extends Serializable,E extends D,K> {
 
     E insert(D item);
 
-    Optional<E> update(K id, D updatedItem);
+    Optional<E> update(K id, D details);
 
-	E upsert(K id, D item);
+	E upsert(K id, D details);
 }
