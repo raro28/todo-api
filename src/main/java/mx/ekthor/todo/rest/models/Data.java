@@ -1,4 +1,4 @@
-package mx.ekthor.rest.models;
+package mx.ekthor.todo.rest.models;
 
 import java.io.Serializable;
 import java.util.List;

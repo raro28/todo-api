@@ -1,4 +1,4 @@
-package mx.ekthor.repositories;
+package mx.ekthor.todo.repositories;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,9 +12,7 @@ public interface CrudRepository<D extends Serializable,E extends D,K> {
 
     Optional<E> delete(K id);
 
-    E insert(D item);
-
-    Optional<E> update(K id, D details);
+    E insert(D details);
 
 	E upsert(K id, D details);
 }

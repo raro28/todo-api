@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:8080/items",
+			"name": "/items",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -25,33 +25,13 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/id",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"items",
-						"3e951f52-6f70-4265-af2c-8753ff8229ed"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:8080/items",
+			"name": "/items",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n \"title\": \"title\",\n \"description\": \"summary description\"\n}",
+					"raw": "{\n \"title\": \"title\",\n \"content\": \"summary\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -73,13 +53,33 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/id",
+			"name": "/items/id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/items/ce199eb3-9e4b-4ad1-81bf-7adf733678d6",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"items",
+						"ce199eb3-9e4b-4ad1-81bf-7adf733678d6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/items/id",
 			"request": {
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n \"title\": \"new title\",\n \"description\": \"new description\"\n}",
+					"raw": "{\n \"title\": \"new title\",\n \"content\": \"new description\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,7 +87,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
+					"raw": "http://localhost:8080/items/ce199eb3-9e4b-4ad1-81bf-7adf733678d6",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -95,19 +95,19 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"3e951f52-6f70-4265-af2c-8753ff8229ed"
+						"ce199eb3-9e4b-4ad1-81bf-7adf733678d6"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/id",
+			"name": "/items/id",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
+					"raw": "http://localhost:8080/items/ce199eb3-9e4b-4ad1-81bf-7adf733678d6",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -115,36 +115,7 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"3e951f52-6f70-4265-af2c-8753ff8229ed"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "http://localhost:8080/items/id",
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n \"title\": \"new title\",\n \"description\": \"new description\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"items",
-						"3e951f52-6f70-4265-af2c-8753ff8229ed"
+						"ce199eb3-9e4b-4ad1-81bf-7adf733678d6"
 					]
 				}
 			},

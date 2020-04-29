@@ -1,4 +1,4 @@
-package mx.ekthor;
+package mx.ekthor.todo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,9 +1,9 @@
-package mx.ekthor.services;
+package mx.ekthor.todo.services;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-import mx.ekthor.rest.models.Data;
+import mx.ekthor.todo.rest.models.Data;
 
 public interface CrudService<D extends Serializable,E extends D,K> {
 
@@ -11,11 +11,9 @@ public interface CrudService<D extends Serializable,E extends D,K> {
 
 	Optional<E> getById(K id);
 
-	E store(D item);
+	E store(D details);
 
 	Optional<E> delete(K id);
 
-	E upsert(K id, D item);
-
-	Optional<E> update(K id, D item);
+	E upsert(K id, D details);
 }
