@@ -3,15 +3,16 @@ package mx.ekthor.repositories.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
 import mx.ekthor.domain.Item;
 import mx.ekthor.domain.ItemBase;
-import mx.ekthor.repositories.ItemRepository;
+import mx.ekthor.repositories.CrudRepository;
 
 @Component
-public class DefaultItemRepository implements ItemRepository {
+public class DefaultItemRepository implements CrudRepository<ItemBase, Item, String> {
     private static final List<Item> ITEMS = new ArrayList<>();
 
     @Override
@@ -48,7 +49,17 @@ public class DefaultItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item insert(String id, ItemBase item) {
+    public Item insert(ItemBase item) {
+        return insert(UUID.randomUUID().toString(), item);
+    }
+
+    @Override
+    public Item upsert(String id, ItemBase item) {
+        delete(id);
+        return insert(id, item);
+    }
+
+    private Item insert(String id, ItemBase item) {
         Item result = Item
             .builder()
                 .id(id)
@@ -59,11 +70,5 @@ public class DefaultItemRepository implements ItemRepository {
         ITEMS.add(result);
 
         return result;
-    }
-
-    @Override
-    public Item upsert(String id, ItemBase item) {
-        delete(id);
-        return insert(id, item);
     }
 }
