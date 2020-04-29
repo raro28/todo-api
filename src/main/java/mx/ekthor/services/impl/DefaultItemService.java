@@ -1,38 +1,43 @@
 package mx.ekthor.services.impl;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
 import mx.ekthor.rest.models.Data;
 import mx.ekthor.rest.models.Item;
+import mx.ekthor.rest.models.ItemBase;
 import mx.ekthor.services.ItemService;
 
 @Component
 public class DefaultItemService implements ItemService {
 
+    private static final Data<Item> ITEMS = Data.<Item>builder().build();
+
     @Override
     public Data<Item> getAll() {
-        Data<Item> result = Data.<Item>builder().build();
-
-        result.getData().add(Item
-            .builder()
-                .id(UUID.randomUUID().toString())
-                .title("title")
-                .description("description")
-            .build());
-
-        return result;
+        return ITEMS;
     }
 
     @Override
-    public Item getById(String id) {
-        return Item
+    public Optional<Item> getById(String id) {
+        return ITEMS.getData().stream()
+            .filter(item -> item.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public Item store(ItemBase item) {
+        Item result = Item
             .builder()
-                .id(id)
-                .title("title")
-                .description("description")
+                .id(UUID.randomUUID().toString())
+                .title(item.getTitle())
+                .description(item.getDescription())
             .build();
+
+        ITEMS.getData().add(result);
+
+        return result;
     }
 
 }
