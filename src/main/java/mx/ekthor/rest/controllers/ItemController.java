@@ -1,20 +1,33 @@
 package mx.ekthor.rest.controllers;
 
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import mx.ekthor.rest.models.Data;
 import mx.ekthor.rest.models.Item;
+import mx.ekthor.services.ItemService;
 
 @RestController
 public class ItemController {
 
+    private final ItemService itemService;
+
+    @Autowired
+    public ItemController(ItemService itemService){
+        this.itemService = itemService;
+    }
+
     @GetMapping("/items")
     public Data<Item> index(){
-        final Data<Item> items = Data.<Item>builder().build();
+        return itemService.getAll();
+    }
 
-        items.getData().add(Item.builder().title("title").description("description").build());
-
-        return items;
+    @GetMapping("/items/{id}")
+    public Item detail(@PathVariable String id){
+        return itemService.getById(id);
     }
 }
