@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,13 @@ public class ItemController {
     @GetMapping("/items/{id}")
     public Item detail(@PathVariable String id) throws ResponseStatusException {
         Optional<Item> result = itemService.getById(id);
+
+        return result.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping("/items/{id}")
+    public Item delete(@PathVariable String id){
+        Optional<Item> result = itemService.delete(id);
 
         return result.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

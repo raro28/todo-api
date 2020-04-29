@@ -40,4 +40,13 @@ public class DefaultItemService implements ItemService {
         return result;
     }
 
+    @Override
+    public Optional<Item> delete(String id) {
+        Optional<Item> result = getById(id);
+        
+        result.ifPresent(item -> ITEMS.getData().remove(item));
+
+        return result;
+    }
+
 }

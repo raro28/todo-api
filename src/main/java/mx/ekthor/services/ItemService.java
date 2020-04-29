@@ -13,4 +13,6 @@ public interface ItemService {
 	Optional<Item> getById(String id);
 
 	Item store(ItemBase item);
+
+	Optional<Item> delete(String id);
 }
