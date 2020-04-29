@@ -25,12 +25,12 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/fake-id",
+			"name": "http://localhost:8080/items/id",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/items/c14cd3cf-5e52-46d4-b47a-9cfa62d1776d",
+					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -38,7 +38,7 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"c14cd3cf-5e52-46d4-b47a-9cfa62d1776d"
+						"3e951f52-6f70-4265-af2c-8753ff8229ed"
 					]
 				}
 			},
@@ -73,7 +73,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/c14cd3cf-5e52-46d4-b47a-9cfa62d1776d",
+			"name": "http://localhost:8080/items/id",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -87,7 +87,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/items/c14cd3cf-5e52-46d4-b47a-9cfa62d1776d",
+					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -95,19 +95,19 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"c14cd3cf-5e52-46d4-b47a-9cfa62d1776d"
+						"3e951f52-6f70-4265-af2c-8753ff8229ed"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/c14cd3cf-5e52-46d4-b47a-9cfa62d1776d",
+			"name": "http://localhost:8080/items/id",
 			"request": {
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/items/c14cd3cf-5e52-46d4-b47a-9cfa62d1776d",
+					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -115,14 +115,14 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"c14cd3cf-5e52-46d4-b47a-9cfa62d1776d"
+						"3e951f52-6f70-4265-af2c-8753ff8229ed"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "http://localhost:8080/items/9e0aa965-f7a9-449c-85b8-a15fed113f4f",
+			"name": "http://localhost:8080/items/id",
 			"request": {
 				"method": "PATCH",
 				"header": [],
@@ -136,7 +136,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/items/9e0aa965-f7a9-449c-85b8-a15fed113f4f",
+					"raw": "http://localhost:8080/items/3e951f52-6f70-4265-af2c-8753ff8229ed",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -144,7 +144,7 @@
 					"port": "8080",
 					"path": [
 						"items",
-						"9e0aa965-f7a9-449c-85b8-a15fed113f4f"
+						"3e951f52-6f70-4265-af2c-8753ff8229ed"
 					]
 				}
 			},

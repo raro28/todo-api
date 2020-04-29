@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,6 +20,7 @@ import mx.ekthor.rest.models.ItemBase;
 import mx.ekthor.services.ItemService;
 
 @RestController
+@RequestMapping("/items")
 public class ItemController {
 
     private final ItemService itemService;
@@ -28,36 +30,36 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @GetMapping("/items")
+    @GetMapping
     public Data<Item> index(){
         return itemService.getAll();
     }
 
-    @PostMapping("/items")
+    @PostMapping
     public Item store(@RequestBody ItemBase item){
         return itemService.store(item);
     }
 
-    @GetMapping("/items/{id}")
+    @GetMapping("{id}")
     public Item detail(@PathVariable String id) throws ResponseStatusException {
         Optional<Item> result = itemService.getById(id);
 
         return result.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/items/{id}")
+    @PutMapping("{id}")
     public Item replace(@PathVariable String id, @RequestBody ItemBase item){
         return itemService.upsert(id, item);
     }
 
-    @PatchMapping("/items/{id}")
+    @PatchMapping("{id}")
     public Item update(@PathVariable String id, @RequestBody ItemBase item){
         Optional<Item> result = itemService.update(id, item);
 
         return result.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping("/items/{id}")
+    @DeleteMapping("{id}")
     public Item delete(@PathVariable String id){
         Optional<Item> result = itemService.delete(id);
 
