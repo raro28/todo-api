@@ -1,4 +1,4 @@
-package mx.ekthor.rest.models;
+package mx.ekthor.domain;
 
 import java.io.Serializable;
 
