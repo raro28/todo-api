@@ -1,6 +1,9 @@
 package mx.ekthor.todo.rest.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,6 +18,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry
+            .addMapping("/**")
+            .allowedMethods(
+                HttpMethod.GET.name(),
+                HttpMethod.HEAD.name(),
+                HttpMethod.POST.name(),
+                HttpMethod.PUT.name(),
+                HttpMethod.DELETE.name())
+            .allowedOrigins("*")
+            .maxAge(1800L);
     }
 }
