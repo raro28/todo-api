@@ -91,6 +91,7 @@ public class TaskController implements TasksApi {
     public ResponseEntity<Void> tasksIdPut(Integer id, @Valid Task task) {
         final mx.ekthor.todo.persistence.domain.jpa.Task entity = taskRepository.findById(id).get();
         entity.setTitle(task.getTitle());
+        entity.setCompleted(task.getIsCompleted());
 
         taskRepository.save(entity);
         return ResponseEntity.noContent().build();
