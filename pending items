@@ -1,0 +1,6 @@
+enforce pagesize >0
+enforce 404 on non existent resources
+enforce total generation
+define a standard error message
+
+generate api doc from spec
