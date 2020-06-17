@@ -3,6 +3,7 @@ package mx.ekthor.todo.rest.controllers.domain;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -80,6 +81,10 @@ public class TaskListController {
 
     @GetMapping("/{id}/tasks")
     public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
+        if(!taskListRepository.existsById(id)){
+            throw new NoSuchElementException(id + "");
+        }
+
         final TaskList taskList = TaskList.builder().id(id).build();
 
         final DataResult<TaskEntityModel> result = DataResult.<TaskEntityModel>builder()
@@ -95,6 +100,10 @@ public class TaskListController {
 
     @PostMapping("/{id}/tasks")
     public ResponseEntity<EntityResult> listsIdTasksPost(@PathVariable final int id, @RequestBody final TaskModel task) {
+        if(!taskListRepository.existsById(id)){
+            throw new NoSuchElementException(id + "");
+        }
+
         Task entity = toEntity(task, Task.class);
         entity.setTaskList(TaskList.builder().id(id).build());
 

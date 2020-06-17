@@ -3,6 +3,7 @@ package mx.ekthor.todo.rest.controllers.domain;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
 
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -56,8 +57,11 @@ public class TaskController {
 
     @GetMapping("/{id}/notes")
     public ResponseEntity<DataResult<NoteEntityModel>> tasksIdNotesGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
-        final Task task = Task.builder().id(id).build();
+        if(!taskRepository.existsById(id)){
+            throw new NoSuchElementException(id + "");
+        }
 
+        final Task task = Task.builder().id(id).build();
 
         DataResult<NoteEntityModel> result = DataResult
             .<NoteEntityModel>builder()
@@ -73,6 +77,10 @@ public class TaskController {
 
     @PostMapping("/{id}/notes")
     public ResponseEntity<EntityResult> tasksIdNotesPost(@PathVariable final int id, @RequestBody final NoteModel note) {
+        if(!taskRepository.existsById(id)){
+            throw new NoSuchElementException(id + "");
+        }
+
         Note entity = toEntity(note, Note.class);
         entity.setTask(Task.builder().id(id).build());
 

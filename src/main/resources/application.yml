@@ -1,7 +1,8 @@
 ## PostgreSQL
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/todolist
+#   url: jdbc:mysql://localhost:3306/todolist
+    url: jdbc:h2:mem:todolist
     username: root
     password: root
 
