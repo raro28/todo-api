@@ -1,4 +1,4 @@
-package mx.ekthor.todo.rest.controllers.domain;
+package mx.ekthor.todo.rest.controllers.domain.impl;
 
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
@@ -10,20 +10,13 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mx.ekthor.todo.persistence.domain.jpa.Note;
 import mx.ekthor.todo.persistence.domain.jpa.Task;
 import mx.ekthor.todo.persistence.repositories.jpa.NoteRepository;
 import mx.ekthor.todo.persistence.repositories.jpa.TaskRepository;
+import mx.ekthor.todo.rest.controllers.domain.TaskApi;
 import mx.ekthor.todo.rest.models.NoteEntityModel;
 import mx.ekthor.todo.rest.models.NoteModel;
 import mx.ekthor.todo.rest.models.TaskModel;
@@ -31,8 +24,7 @@ import mx.ekthor.todo.rest.models.responses.DataResult;
 import mx.ekthor.todo.rest.models.responses.EntityResult;
 
 @RestController
-@RequestMapping("/tasks")
-public class TaskController {
+public class TaskController implements TaskApi{
 
     private TaskRepository taskRepository;
     private NoteRepository noteRepository;
@@ -43,20 +35,20 @@ public class TaskController {
         this.noteRepository = noteRepository;
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> tasksIdDelete(@PathVariable final int id) {
+    @Override
+    public ResponseEntity<Void> tasksIdDelete(final int id) {
         taskRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TaskModel> tasksIdGet(@PathVariable final int id) {
+    @Override
+    public ResponseEntity<TaskModel> tasksIdGet(final int id) {
         return ResponseEntity.ok().body(toEntityModel(taskRepository.findById(id).get()));
     }
 
-    @GetMapping("/{id}/notes")
-    public ResponseEntity<DataResult<NoteEntityModel>> tasksIdNotesGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
+    @Override
+    public ResponseEntity<DataResult<NoteEntityModel>> tasksIdNotesGet(final int id, final int page, final int size) {
         if(!taskRepository.existsById(id)){
             throw new NoSuchElementException(id + "");
         }
@@ -75,8 +67,8 @@ public class TaskController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/{id}/notes")
-    public ResponseEntity<EntityResult> tasksIdNotesPost(@PathVariable final int id, @RequestBody final NoteModel note) {
+    @Override
+    public ResponseEntity<EntityResult> tasksIdNotesPost(final int id, final NoteModel note) {
         if(!taskRepository.existsById(id)){
             throw new NoSuchElementException(id + "");
         }
@@ -90,8 +82,8 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> tasksIdPut(@PathVariable final int id, @RequestBody final TaskModel task) {
+    @Override
+    public ResponseEntity<Void> tasksIdPut(final int id, final TaskModel task) {
         final Task entity = taskRepository.findById(id).get();
         entity.setTitle(task.getTitle());
         entity.setCompleted(task.isCompleted());

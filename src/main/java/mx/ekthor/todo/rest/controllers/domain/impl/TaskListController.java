@@ -1,4 +1,4 @@
-package mx.ekthor.todo.rest.controllers.domain;
+package mx.ekthor.todo.rest.controllers.domain.impl;
 
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
 import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
@@ -10,20 +10,13 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import mx.ekthor.todo.persistence.domain.jpa.Task;
 import mx.ekthor.todo.persistence.domain.jpa.TaskList;
 import mx.ekthor.todo.persistence.repositories.jpa.TaskListRepository;
 import mx.ekthor.todo.persistence.repositories.jpa.TaskRepository;
+import mx.ekthor.todo.rest.controllers.domain.TaskListApi;
 import mx.ekthor.todo.rest.models.TaskEntityModel;
 import mx.ekthor.todo.rest.models.TaskListEntityModel;
 import mx.ekthor.todo.rest.models.TaskListModel;
@@ -32,8 +25,7 @@ import mx.ekthor.todo.rest.models.responses.DataResult;
 import mx.ekthor.todo.rest.models.responses.EntityResult;
 
 @RestController
-@RequestMapping("/lists")
-public class TaskListController {
+public class TaskListController implements TaskListApi{
 
     private final TaskListRepository taskListRepository;
     private final TaskRepository taskRepository;
@@ -44,9 +36,8 @@ public class TaskListController {
         this.taskRepository = taskRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<DataResult<TaskListEntityModel>> listsGet(@RequestParam final int page,
-            @RequestParam final int size) {
+    @Override
+    public ResponseEntity<DataResult<TaskListEntityModel>> listsGet(final int page, final int size) {
         final DataResult<TaskListEntityModel> result = DataResult.<TaskListEntityModel>builder()
                 .data(StreamSupport
                     .stream(taskListRepository.findAll().spliterator(), false)
@@ -58,20 +49,20 @@ public class TaskListController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> listsIdDelete(@PathVariable final int id) {
+    @Override
+    public ResponseEntity<Void> listsIdDelete(final int id) {
         taskListRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TaskListModel> listsIdGet(@PathVariable final int id) {
+    @Override
+    public ResponseEntity<TaskListModel> listsIdGet(final int id) {
         return ResponseEntity.ok().body(toEntityModel(taskListRepository.findById(id).get()));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> listsIdPut(@PathVariable final int id, @RequestBody final TaskListModel taskList) {
+    @Override
+    public ResponseEntity<Void> listsIdPut(final int id, final TaskListModel taskList) {
         final TaskList entity = taskListRepository.findById(id).get();
         entity.setTitle(taskList.getTitle());
 
@@ -79,8 +70,8 @@ public class TaskListController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/tasks")
-    public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
+    @Override
+    public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(final int id, final int page,final int size) {
         if(!taskListRepository.existsById(id)){
             throw new NoSuchElementException(id + "");
         }
@@ -98,8 +89,8 @@ public class TaskListController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PostMapping("/{id}/tasks")
-    public ResponseEntity<EntityResult> listsIdTasksPost(@PathVariable final int id, @RequestBody final TaskModel task) {
+    @Override
+    public ResponseEntity<EntityResult> listsIdTasksPost(final int id, final TaskModel task) {
         if(!taskListRepository.existsById(id)){
             throw new NoSuchElementException(id + "");
         }
@@ -113,8 +104,8 @@ public class TaskListController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PostMapping
-    public ResponseEntity<EntityResult> listsPost(@RequestBody final TaskListModel taskList) {
+    @Override
+    public ResponseEntity<EntityResult> listsPost(final TaskListModel taskList) {
         TaskList entity = toEntity(taskList, TaskList.class);
 
         final TaskList storedEntity = taskListRepository.save(entity);
