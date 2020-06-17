@@ -14,14 +14,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class TaskList implements Serializable{
 
@@ -30,8 +30,11 @@ public class TaskList implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     private String title;
+
+    @Builder.Default
     @OneToMany(mappedBy = "taskList", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Task> tasks = new ArrayList<>(1);
 }

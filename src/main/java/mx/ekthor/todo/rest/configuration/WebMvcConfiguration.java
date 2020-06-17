@@ -1,7 +1,5 @@
 package mx.ekthor.todo.rest.configuration;
 
-import java.util.Arrays;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

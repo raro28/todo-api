@@ -1,3 +1,0 @@
-[submodule "src/main/resources/todo-api-spec"]
-	path = src/main/resources/todo-api-spec
-	url = git@github.com:raro28/todo-api-spec.git

@@ -30,7 +30,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -50,12 +55,6 @@
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>${springdoc-openapi-ui.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>${swagger-annotations.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -66,94 +65,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>swagger-generator</id>
-			<properties>
-				<swagger-codegen-maven-plugin.version>3.0.20</swagger-codegen-maven-plugin.version>
-			</properties>
-			<build>
-				<plugins>
-
-					<plugin>
-						<groupId>io.swagger.codegen.v3</groupId>
-						<artifactId>swagger-codegen-maven-plugin</artifactId>
-						<version>${swagger-codegen-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-								<configuration>
-									<inputSpec>${project.basedir}/src/main/resources/todo-api-spec/api.spec.yaml</inputSpec>
-									<language>spring</language>
-									<library>spring-mvc</library>
-									<configOptions>
-									   <sourceFolder>src/java/main</sourceFolder>
-									   <dateLibrary>java8</dateLibrary>
-									   <interfaceOnly>true</interfaceOnly>
-									   <defaultInterfaces>false</defaultInterfaces>
-									</configOptions>
-									<generateApiTests>false</generateApiTests>
-									<generateSupportingFiles>false</generateSupportingFiles>
-									<apiPackage>mx.ekthor.openapi.api</apiPackage>
-									<modelPackage>mx.ekthor.openapi.models</modelPackage>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>openapi-generator</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<openapi-generator-maven-plugin.version>4.3.1</openapi-generator-maven-plugin.version>
-				<jackson-databind-nullable.version>0.2.1</jackson-databind-nullable.version>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.openapitools</groupId>
-					<artifactId>jackson-databind-nullable</artifactId>
-					<version>${jackson-databind-nullable.version}</version>
-				</dependency>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.openapitools</groupId>
-						<artifactId>openapi-generator-maven-plugin</artifactId>
-						<version>${openapi-generator-maven-plugin.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>generate</goal>
-								</goals>
-								<configuration>
-									<inputSpec>${project.basedir}/src/main/resources/todo-api-spec/api.spec.yaml</inputSpec>
-									<generatorName>spring</generatorName>
-									<configOptions>
-										<sourceFolder>src/java/main</sourceFolder>
-										<dateLibrary>java8</dateLibrary>
-										<interfaceOnly>true</interfaceOnly>
-										<library>spring-mvc</library>
-										<skipDefaultInterface>true</skipDefaultInterface>
-									</configOptions>
-									<generateApiTests>false</generateApiTests>
-									<generateSupportingFiles>false</generateSupportingFiles>
-									<apiPackage>mx.ekthor.openapi.api</apiPackage>
-									<modelPackage>mx.ekthor.openapi.models</modelPackage>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
 </project>

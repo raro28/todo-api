@@ -11,14 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Note implements Serializable{
 
@@ -27,8 +27,10 @@ public class Note implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     private String content;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Task task;
 }

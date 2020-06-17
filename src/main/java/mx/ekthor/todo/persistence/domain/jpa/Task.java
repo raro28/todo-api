@@ -15,15 +15,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Task implements Serializable{
 
@@ -32,12 +31,17 @@ public class Task implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     private String title;
+
     @Column
     private boolean isCompleted;
+    
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TaskList taskList;
+
+    @Builder.Default
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Note> notes = new ArrayList<>(1);
 }

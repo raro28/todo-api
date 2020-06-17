@@ -1,25 +1,37 @@
 package mx.ekthor.todo.rest.controllers.domain;
 
+import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
+import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
+
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.validation.Valid;
-
-import mx.ekthor.openapi.api.TasksApi;
-import mx.ekthor.openapi.models.Entity;
-import mx.ekthor.openapi.models.Note;
-import mx.ekthor.openapi.models.NoteResult;
-import mx.ekthor.openapi.models.Task;
-import mx.ekthor.todo.persistence.repositories.jpa.NoteRepository;
-import mx.ekthor.todo.persistence.repositories.jpa.TaskRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import mx.ekthor.todo.persistence.domain.jpa.Note;
+import mx.ekthor.todo.persistence.domain.jpa.Task;
+import mx.ekthor.todo.persistence.repositories.jpa.NoteRepository;
+import mx.ekthor.todo.persistence.repositories.jpa.TaskRepository;
+import mx.ekthor.todo.rest.models.NoteEntityModel;
+import mx.ekthor.todo.rest.models.NoteModel;
+import mx.ekthor.todo.rest.models.TaskModel;
+import mx.ekthor.todo.rest.models.responses.DataResult;
+import mx.ekthor.todo.rest.models.responses.EntityResult;
+
 @RestController
-public class TaskController implements TasksApi {
+@RequestMapping("/tasks")
+public class TaskController {
 
     private TaskRepository taskRepository;
     private NoteRepository noteRepository;
@@ -30,68 +42,51 @@ public class TaskController implements TasksApi {
         this.noteRepository = noteRepository;
     }
 
-    private Task toDto(mx.ekthor.todo.persistence.domain.jpa.Task task) {
-        Task result = new Task();
-        result.setIsCompleted(task.isCompleted());
-        result.setTitle(task.getTitle());
-
-        return result;
-    }
-
-    private mx.ekthor.openapi.models.NoteEntity toDtoEntity(final mx.ekthor.todo.persistence.domain.jpa.Note item) {
-        mx.ekthor.openapi.models.NoteEntity result = new mx.ekthor.openapi.models.NoteEntity();
-        result.setContent(item.getContent());
-        result.setId(item.getId());
-
-        return result;
-    }
-
-    @Override
-    public ResponseEntity<Void> tasksIdDelete(Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> tasksIdDelete(@PathVariable final int id) {
         taskRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<Task> tasksIdGet(Integer id) {
-        return ResponseEntity.ok().body(toDto(taskRepository.findById(id).get()));
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskModel> tasksIdGet(@PathVariable final int id) {
+        return ResponseEntity.ok().body(toEntityModel(taskRepository.findById(id).get()));
     }
 
-    @Override
-    public ResponseEntity<NoteResult> tasksIdNotesGet(Integer id, @Valid Integer page, @Valid Integer size) {
-        final mx.ekthor.todo.persistence.domain.jpa.Task task = new mx.ekthor.todo.persistence.domain.jpa.Task();
-        task.setId(id);
+    @GetMapping("/{id}/notes")
+    public ResponseEntity<DataResult<NoteEntityModel>> tasksIdNotesGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
+        final Task task = Task.builder().id(id).build();
 
 
-        NoteResult result = new NoteResult();
-        result.setData(StreamSupport.stream(noteRepository.findByTask(task).spliterator(), false).map(item -> toDtoEntity(item)).collect(Collectors.toList()));
+        DataResult<NoteEntityModel> result = DataResult
+            .<NoteEntityModel>builder()
+                .data(StreamSupport
+                    .stream(noteRepository.findByTask(task).spliterator(), false)
+                        .map(n -> toEntityModel(n))
+                    .collect(Collectors.toList()))
+            .build();
         result.setTotal(result.getData().size());
         
         return ResponseEntity.ok().body(result);
     }
 
-    @Override
-    public ResponseEntity<Entity> tasksIdNotesPost(Integer id, @Valid Note note) {
-        final mx.ekthor.todo.persistence.domain.jpa.Task task = new mx.ekthor.todo.persistence.domain.jpa.Task();
-        task.setId(id);
+    @PostMapping("/{id}/notes")
+    public ResponseEntity<EntityResult> tasksIdNotesPost(@PathVariable final int id, @RequestBody final NoteModel note) {
+        Note entity = toEntity(note, Note.class);
+        entity.setTask(Task.builder().id(id).build());
 
-        final mx.ekthor.todo.persistence.domain.jpa.Note entity = new mx.ekthor.todo.persistence.domain.jpa.Note();
-        entity.setContent(note.getContent());
-        entity.setTask(task);
-
-        final mx.ekthor.todo.persistence.domain.jpa.Note storedEntity = noteRepository.save(entity);
-        final Entity result = new Entity();
-        result.setId(storedEntity.getId());
+        final Note storedEntity = noteRepository.save(entity);
+        final EntityResult result = EntityResult.builder().id(storedEntity.getId()).build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @Override
-    public ResponseEntity<Void> tasksIdPut(Integer id, @Valid Task task) {
-        final mx.ekthor.todo.persistence.domain.jpa.Task entity = taskRepository.findById(id).get();
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> tasksIdPut(@PathVariable final int id, @RequestBody final TaskModel task) {
+        final Task entity = taskRepository.findById(id).get();
         entity.setTitle(task.getTitle());
-        entity.setCompleted(task.getIsCompleted());
+        entity.setCompleted(task.isCompleted());
 
         taskRepository.save(entity);
         return ResponseEntity.noContent().build();

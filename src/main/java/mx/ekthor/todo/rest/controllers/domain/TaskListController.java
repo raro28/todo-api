@@ -1,26 +1,38 @@
 package mx.ekthor.todo.rest.controllers.domain;
 
+import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntity;
+import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
+
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import mx.ekthor.openapi.api.ListsApi;
-import mx.ekthor.openapi.models.Entity;
-import mx.ekthor.openapi.models.Task;
-import mx.ekthor.openapi.models.TaskList;
-import mx.ekthor.openapi.models.TaskListResult;
-import mx.ekthor.openapi.models.TaskResult;
+import mx.ekthor.todo.persistence.domain.jpa.Task;
+import mx.ekthor.todo.persistence.domain.jpa.TaskList;
 import mx.ekthor.todo.persistence.repositories.jpa.TaskListRepository;
 import mx.ekthor.todo.persistence.repositories.jpa.TaskRepository;
+import mx.ekthor.todo.rest.models.TaskEntityModel;
+import mx.ekthor.todo.rest.models.TaskListEntityModel;
+import mx.ekthor.todo.rest.models.TaskListModel;
+import mx.ekthor.todo.rest.models.TaskModel;
+import mx.ekthor.todo.rest.models.responses.DataResult;
+import mx.ekthor.todo.rest.models.responses.EntityResult;
 
 @RestController
-public class TaskListController implements ListsApi {
+@RequestMapping("/lists")
+public class TaskListController {
 
     private final TaskListRepository taskListRepository;
     private final TaskRepository taskRepository;
@@ -31,98 +43,73 @@ public class TaskListController implements ListsApi {
         this.taskRepository = taskRepository;
     }
 
-    private mx.ekthor.openapi.models.TaskListEntity toDtoEntity(final mx.ekthor.todo.persistence.domain.jpa.TaskList item){
-        final mx.ekthor.openapi.models.TaskListEntity mapped = new mx.ekthor.openapi.models.TaskListEntity();
-        mapped.setId(item.getId());
-        mapped.setTitle(item.getTitle());
-
-        return mapped;
-    }
-
-    private mx.ekthor.openapi.models.TaskEntity toDtoEntity(final mx.ekthor.todo.persistence.domain.jpa.Task item){
-        final mx.ekthor.openapi.models.TaskEntity mapped = new mx.ekthor.openapi.models.TaskEntity();
-        mapped.setId(item.getId());
-        mapped.setTitle(item.getTitle());
-        mapped.setIsCompleted(item.isCompleted());
-
-        return mapped;
-    }
-
-    private mx.ekthor.openapi.models.TaskList toDto(final mx.ekthor.todo.persistence.domain.jpa.TaskList item){
-        final mx.ekthor.openapi.models.TaskList mapped = new mx.ekthor.openapi.models.TaskList();
-        mapped.setTitle(item.getTitle());
-
-        return mapped;
-    }
-
-    @Override
-    public ResponseEntity<TaskListResult> listsGet(@Valid final Integer page, @Valid final Integer size) {
-        final TaskListResult result = new TaskListResult();
-        result.setData(StreamSupport.stream(taskListRepository.findAll().spliterator(), false).map(item -> toDtoEntity(item)).collect(Collectors.toList()));
+    @GetMapping
+    public ResponseEntity<DataResult<TaskListEntityModel>> listsGet(@RequestParam final int page,
+            @RequestParam final int size) {
+        final DataResult<TaskListEntityModel> result = DataResult.<TaskListEntityModel>builder()
+                .data(StreamSupport
+                    .stream(taskListRepository.findAll().spliterator(), false)
+                        .map(t -> toEntityModel(t))
+                    .collect(Collectors.toList()))
+                .build();
         result.setTotal(result.getData().size());
-        
+
         return ResponseEntity.ok().body(result);
     }
 
-    @Override
-    public ResponseEntity<Void> listsIdDelete(final Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> listsIdDelete(@PathVariable final int id) {
         taskListRepository.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<TaskList> listsIdGet(final Integer id) {
-        return ResponseEntity.ok().body(toDto(taskListRepository.findById(id).get()));
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskListModel> listsIdGet(@PathVariable final int id) {
+        return ResponseEntity.ok().body(toEntityModel(taskListRepository.findById(id).get()));
     }
 
-    @Override
-    public ResponseEntity<Void> listsIdPut(final Integer id, @Valid final TaskList taskList) {
-        final mx.ekthor.todo.persistence.domain.jpa.TaskList entity = new mx.ekthor.todo.persistence.domain.jpa.TaskList();
-        entity.setId(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> listsIdPut(@PathVariable final int id, @RequestBody final TaskListModel taskList) {
+        final TaskList entity = taskListRepository.findById(id).get();
         entity.setTitle(taskList.getTitle());
 
         taskListRepository.save(entity);
         return ResponseEntity.noContent().build();
     }
 
-    @Override
-    public ResponseEntity<TaskResult> listsIdTasksGet(final Integer id, @Valid final Integer page, @Valid final Integer size) {
-        final mx.ekthor.todo.persistence.domain.jpa.TaskList taskList = new mx.ekthor.todo.persistence.domain.jpa.TaskList();
-        taskList.setId(id);
+    @GetMapping("/{id}/tasks")
+    public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(@PathVariable final int id, @RequestParam final int page, @RequestParam final int size) {
+        final TaskList taskList = TaskList.builder().id(id).build();
 
-        final TaskResult result = new TaskResult();
-        result.setData(StreamSupport.stream(taskRepository.findByTaskList(taskList).spliterator(), false).map(item -> toDtoEntity(item)).collect(Collectors.toList()));
+        final DataResult<TaskEntityModel> result = DataResult.<TaskEntityModel>builder()
+                .data(StreamSupport
+                    .stream(taskRepository.findByTaskList(taskList).spliterator(), false)
+                        .map(t -> toEntityModel(t))
+                    .collect(Collectors.toList()))
+                .build();
         result.setTotal(result.getData().size());
-        
+
         return ResponseEntity.ok().body(result);
     }
 
-    @Override
-    public ResponseEntity<Entity> listsIdTasksPost(final Integer id, @Valid final Task task) {
-        final mx.ekthor.todo.persistence.domain.jpa.TaskList taskList = new mx.ekthor.todo.persistence.domain.jpa.TaskList();
-        taskList.setId(id);
+    @PostMapping("/{id}/tasks")
+    public ResponseEntity<EntityResult> listsIdTasksPost(@PathVariable final int id, @RequestBody final TaskModel task) {
+        Task entity = toEntity(task, Task.class);
+        entity.setTaskList(TaskList.builder().id(id).build());
 
-        final mx.ekthor.todo.persistence.domain.jpa.Task entity = new mx.ekthor.todo.persistence.domain.jpa.Task();
-        entity.setTitle(task.getTitle());
-        entity.setCompleted(task.getIsCompleted());
-        entity.setTaskList(taskList);
-
-        final mx.ekthor.todo.persistence.domain.jpa.Task storedEntity = taskRepository.save(entity);
-        final Entity result = new Entity();
-        result.setId(storedEntity.getId());
+        final Task storedEntity = taskRepository.save(entity);
+        final EntityResult result = EntityResult.builder().id(storedEntity.getId()).build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @Override
-    public ResponseEntity<Entity> listsPost(@Valid final TaskList taskList) {
-        final mx.ekthor.todo.persistence.domain.jpa.TaskList entity = new mx.ekthor.todo.persistence.domain.jpa.TaskList();
-        entity.setTitle(taskList.getTitle());
+    @PostMapping
+    public ResponseEntity<EntityResult> listsPost(@RequestBody final TaskListModel taskList) {
+        TaskList entity = toEntity(taskList, TaskList.class);
 
-        final mx.ekthor.todo.persistence.domain.jpa.TaskList storedEntity = taskListRepository.save(entity);
-        final Entity result = new Entity();
-        result.setId(storedEntity.getId());
+        final TaskList storedEntity = taskListRepository.save(entity);
+        final EntityResult result = EntityResult.builder().id(storedEntity.getId()).build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
