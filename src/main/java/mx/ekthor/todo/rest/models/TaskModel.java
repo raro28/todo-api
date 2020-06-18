@@ -9,5 +9,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class TaskModel {
     private String title;
-    private boolean isCompleted;
+    private boolean completed;
 }

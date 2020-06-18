@@ -36,7 +36,7 @@ public class Task implements Serializable{
     private String title;
 
     @Column
-    private boolean isCompleted;
+    private boolean completed;
     
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TaskList taskList;

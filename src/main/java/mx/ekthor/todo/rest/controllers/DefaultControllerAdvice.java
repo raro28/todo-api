@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,7 @@ public class DefaultControllerAdvice {
         return getDefaultResponse(ex, HttpStatus.NOT_FOUND, handlerMethod, request);
     }
 
-    @ExceptionHandler({JsonParseException.class, ConstraintViolationException.class})
+    @ExceptionHandler({JsonParseException.class, ConstraintViolationException.class, UnrecognizedPropertyException.class})
     @ApiResponse(responseCode = "400", description = "Bad Request", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Error.class))})
     public ResponseEntity<Error> badRequest(Exception ex, HandlerMethod handlerMethod, HttpServletRequest request){
         return getDefaultResponse(ex, HttpStatus.BAD_REQUEST, handlerMethod, request);

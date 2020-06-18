@@ -31,7 +31,7 @@ public class Converters {
         return TaskEntityModel
             .builder()
                 .id(entity.getId())
-                .isCompleted(entity.isCompleted())
+                .completed(entity.isCompleted())
                 .title(entity.getTitle())
             .build();
     }
