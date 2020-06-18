@@ -10,4 +10,13 @@ spring:
     hibernate:
       ddl-auto: create
 
-spring.jackson.deserialization.FAIL_ON_UNKNOWN_PROPERTIES: true
+  jackson:
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://mumei:8880/auth/realms/todolist
+          jwk-set-uri: http://mumei:8880/auth/realms/todolist/protocol/openid-connect/certs

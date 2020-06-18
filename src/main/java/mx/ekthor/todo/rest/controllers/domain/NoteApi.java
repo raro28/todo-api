@@ -17,22 +17,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import mx.ekthor.todo.rest.models.NoteModel;
 
 @Validated
 @RequestMapping("/notes")
 public interface NoteApi {
-    @Operation(summary = "Deletes a note by its id", tags = {"notes", "crud"})
+    @Operation(summary = "Deletes a note by its id", tags = {"notes", "crud"}, security = @SecurityRequirement(name = "oAuth2", scopes = "write"))
     @ApiResponse(responseCode = "204", description = "Note deleted")
     @DeleteMapping("/{id}")
     ResponseEntity<Void> notesIdDelete(@PathVariable @Min(0) @Max(1000000) final int id);
 
-    @Operation(summary = "Gets a note by its id", tags = {"notes", "crud"})
+    @Operation(summary = "Gets a note by its id", tags = {"notes", "crud"}, security = @SecurityRequirement(name = "oAuth2", scopes = "read"))
     @ApiResponse(responseCode = "200", description = "A note", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = NoteModel.class))})
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<NoteModel> notesIdGet(@PathVariable @Min(0) @Max(1000000) final int id);
 
-    @Operation(summary = "Replaces an existing note", tags = {"notes", "crud"})
+    @Operation(summary = "Replaces an existing note", tags = {"notes", "crud"}, security = @SecurityRequirement(name = "oAuth2", scopes = "write"))
     @ApiResponse(responseCode = "204", description = "Note replaced")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Void> notesIdPut(@PathVariable @Min(0) @Max(1000000) final int id, @io.swagger.v3.oas.annotations.parameters.RequestBody(description="The note info to replace") @RequestBody final NoteModel note);
