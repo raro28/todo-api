@@ -3,52 +3,16 @@ package mx.ekthor.todo.rest.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.OAuthFlow;
-import io.swagger.v3.oas.annotations.security.OAuthFlows;
-import io.swagger.v3.oas.annotations.security.OAuthScope;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.Scopes;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 
-@SecurityScheme(
-     name = "oAuth2",
-     type = SecuritySchemeType.OAUTH2,
-     flows = @OAuthFlows(
-         implicit = @OAuthFlow(
-            authorizationUrl = "http://mumei:8880/auth/realms/todolist/protocol/openid-connect/auth",
-            scopes = {
-               @OAuthScope(name = "read", description = "read access"),
-               @OAuthScope(name = "write", description = "Write access")
-            }
-         ),
-         authorizationCode = @OAuthFlow(
-            authorizationUrl = "http://mumei:8880/auth/realms/todolist/protocol/openid-connect/auth",
-            tokenUrl = "http://mumei:8880/auth/realms/todolist/protocol/openid-connect/token",
-            scopes = {
-               @OAuthScope(name = "read", description = "read access"),
-               @OAuthScope(name = "write", description = "Write access")
-            }
-         ),
-         password = @OAuthFlow(
-            tokenUrl = "http://mumei:8880/auth/realms/todolist/protocol/openid-connect/token",
-            scopes = {
-               @OAuthScope(name = "read", description = "read access"),
-               @OAuthScope(name = "write", description = "Write access")
-            }
-         )/*,
-         clientCredentials = @OAuthFlow(
-            tokenUrl = "http://mumei:8880/auth/realms/todolist/protocol/openid-connect/token",
-            scopes = {
-               @OAuthScope(name = "read", description = "read access"),
-               @OAuthScope(name = "write", description = "Write access")
-            }
-         )*/
-     )
-)
 @Configuration
 public class SpringDocConfiguration {
 
@@ -71,6 +35,36 @@ public class SpringDocConfiguration {
             .addServersItem(new Server()
                 .url("http://mumei:8080")
                 .description("spring-boot server")
+            )
+            .components(new Components()
+                .addSecuritySchemes("oAuth2", new SecurityScheme()
+                    .type(SecurityScheme.Type.OAUTH2)
+                    .description("This API uses OAuth 2")
+                    .flows(new OAuthFlows()
+                        .implicit(new OAuthFlow()
+                            .authorizationUrl("http://mumei:8880/auth/realms/todolist/protocol/openid-connect/auth")
+                            .scopes(new Scopes()
+                                .addString("read", "read access")
+                                .addString("write", "Write access")
+                            )
+                        )
+                        .authorizationCode(new OAuthFlow()
+                            .authorizationUrl("http://mumei:8880/auth/realms/todolist/protocol/openid-connect/auth")
+                            .tokenUrl("http://mumei:8880/auth/realms/todolist/protocol/openid-connect/token")
+                            .scopes(new Scopes()
+                                .addString("read", "read access")
+                                .addString("write", "Write access")
+                            )
+                        )
+                        .password(new OAuthFlow()
+                            .tokenUrl("http://mumei:8880/auth/realms/todolist/protocol/openid-connect/token")
+                            .scopes(new Scopes()
+                                .addString("read", "read access")
+                                .addString("write", "Write access")
+                            )
+                        )
+                    )
+                )
             );
     }
 }
