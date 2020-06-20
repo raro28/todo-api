@@ -52,7 +52,7 @@ public interface TaskListApi {
     @Operation(summary = "Gets a paginated list of tasks related to an existing task list", tags = {"lists", "tasks", "crud"})
     @ApiResponse(responseCode = "200", description = "A list of tasks", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = DataResult.class)))
     @GetMapping(value = "/{id}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(@PathVariable @Min(0) @Max(1000000) final int id, @RequestParam @Min(0) @Max(20000) final int page, @RequestParam @Min(0) @Max(50) final int size);
+    ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(@PathVariable @Min(0) @Max(1000000) final int id, @RequestParam @Min(1) @Max(20000) final int page, @RequestParam @Min(1) @Max(50) final int size);
 
     @Operation(summary = "Creates a new task on an existing task list", tags = {"lists", "tasks", "crud"})
     @ApiResponse(responseCode = "201", description = "The id of the new Task", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EntityResult.class))})
