@@ -5,9 +5,10 @@ import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,15 +55,17 @@ public class TaskController implements TaskApi{
         }
 
         final Task task = Task.builder().id(id).build();
+        Page<Note> pageResult = noteRepository.findByTask(task, PageRequest.of(page - 1, size));
 
         DataResult<NoteEntityModel> result = DataResult
             .<NoteEntityModel>builder()
-                .data(StreamSupport
-                    .stream(noteRepository.findByTask(task).spliterator(), false)
+                .data(pageResult
+                    .stream()
                         .map(n -> toEntityModel(n))
                     .collect(Collectors.toList()))
             .build();
-        result.setTotal(result.getData().size());
+        result.setTotal(pageResult.getTotalElements());
+        result.setPages(pageResult.getTotalPages());
         
         return ResponseEntity.ok().body(result);
     }

@@ -5,9 +5,10 @@ import static mx.ekthor.todo.rest.controllers.utils.Converters.toEntityModel;
 
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ import mx.ekthor.todo.rest.models.responses.DataResult;
 import mx.ekthor.todo.rest.models.responses.EntityResult;
 
 @RestController
-public class TaskListController implements TaskListApi{
+public class TaskListController implements TaskListApi {
 
     private final TaskListRepository taskListRepository;
     private final TaskRepository taskRepository;
@@ -38,13 +39,16 @@ public class TaskListController implements TaskListApi{
 
     @Override
     public ResponseEntity<DataResult<TaskListEntityModel>> listsGet(final int page, final int size) {
+        Page<TaskList> pageResult = taskListRepository.findAll(PageRequest.of(page - 1, size));
+
         final DataResult<TaskListEntityModel> result = DataResult.<TaskListEntityModel>builder()
-                .data(StreamSupport
-                    .stream(taskListRepository.findAll().spliterator(), false)
+                .data(pageResult
+                    .stream()
                         .map(t -> toEntityModel(t))
                     .collect(Collectors.toList()))
                 .build();
-        result.setTotal(result.getData().size());
+        result.setTotal(pageResult.getTotalElements());
+        result.setPages(pageResult.getTotalPages());
 
         return ResponseEntity.ok().body(result);
     }
@@ -71,20 +75,22 @@ public class TaskListController implements TaskListApi{
     }
 
     @Override
-    public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(final int id, final int page,final int size) {
+    public ResponseEntity<DataResult<TaskEntityModel>> listsIdTasksGet(final int id, final int page, final int size) {
         if(!taskListRepository.existsById(id)){
             throw new NoSuchElementException(id + "");
         }
 
         final TaskList taskList = TaskList.builder().id(id).build();
+        Page<Task> pageResult = taskRepository.findByTaskList(taskList, PageRequest.of(page - 1, size));
 
         final DataResult<TaskEntityModel> result = DataResult.<TaskEntityModel>builder()
-                .data(StreamSupport
-                    .stream(taskRepository.findByTaskList(taskList).spliterator(), false)
+                .data(pageResult
+                    .stream()
                         .map(t -> toEntityModel(t))
                     .collect(Collectors.toList()))
                 .build();
-        result.setTotal(result.getData().size());
+        result.setTotal(pageResult.getTotalElements());
+        result.setPages(pageResult.getTotalPages());
 
         return ResponseEntity.ok().body(result);
     }

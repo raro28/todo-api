@@ -9,7 +9,8 @@ import lombok.Data;
 @Data
 @Builder
 public class DataResult<E> {
-    private int total;
+    private long total;
+    private int pages;
 
     @Builder.Default 
     private List<E> data = new ArrayList<>();
