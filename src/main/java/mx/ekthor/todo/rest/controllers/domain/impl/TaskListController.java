@@ -41,14 +41,17 @@ public class TaskListController implements TaskListApi {
     public ResponseEntity<DataResult<TaskListEntityModel>> listsGet(final int page, final int size) {
         Page<TaskList> pageResult = taskListRepository.findAll(PageRequest.of(page - 1, size));
 
-        final DataResult<TaskListEntityModel> result = DataResult.<TaskListEntityModel>builder()
+        final DataResult<TaskListEntityModel> result = DataResult
+            .<TaskListEntityModel>builder()
+                .current(page)
+                .size(size)
                 .data(pageResult
                     .stream()
                         .map(t -> toEntityModel(t))
                     .collect(Collectors.toList()))
-                .build();
-        result.setTotal(pageResult.getTotalElements());
-        result.setTotalPages(pageResult.getTotalPages());
+                .total(pageResult.getTotalElements())
+                .totalPages(pageResult.getTotalPages())
+            .build();
 
         return ResponseEntity.ok().body(result);
     }
@@ -83,14 +86,17 @@ public class TaskListController implements TaskListApi {
         final TaskList taskList = TaskList.builder().id(id).build();
         Page<Task> pageResult = taskRepository.findByTaskList(taskList, PageRequest.of(page - 1, size));
 
-        final DataResult<TaskEntityModel> result = DataResult.<TaskEntityModel>builder()
+        final DataResult<TaskEntityModel> result = DataResult
+            .<TaskEntityModel>builder()
+                .current(page)
+                .size(size)
                 .data(pageResult
                     .stream()
                         .map(t -> toEntityModel(t))
                     .collect(Collectors.toList()))
-                .build();
-        result.setTotal(pageResult.getTotalElements());
-        result.setTotalPages(pageResult.getTotalPages());
+                .total(pageResult.getTotalElements())
+                .totalPages(pageResult.getTotalPages())
+            .build();
 
         return ResponseEntity.ok().body(result);
     }

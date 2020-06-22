@@ -59,13 +59,15 @@ public class TaskController implements TaskApi{
 
         DataResult<NoteEntityModel> result = DataResult
             .<NoteEntityModel>builder()
+                .current(page)
+                .size(size)
                 .data(pageResult
                     .stream()
                         .map(n -> toEntityModel(n))
                     .collect(Collectors.toList()))
+                .total(pageResult.getTotalElements())
+                .totalPages(pageResult.getTotalPages())
             .build();
-        result.setTotal(pageResult.getTotalElements());
-        result.setTotalPages(pageResult.getTotalPages());
         
         return ResponseEntity.ok().body(result);
     }

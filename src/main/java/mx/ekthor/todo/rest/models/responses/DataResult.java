@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 @Builder
 public class DataResult<E> {
+    private int current;
+    private int size;
     private long total;
     private int totalPages;
 
