@@ -48,7 +48,7 @@ public class TaskListController implements TaskListApi {
                     .collect(Collectors.toList()))
                 .build();
         result.setTotal(pageResult.getTotalElements());
-        result.setPages(pageResult.getTotalPages());
+        result.setTotalPages(pageResult.getTotalPages());
 
         return ResponseEntity.ok().body(result);
     }
@@ -90,7 +90,7 @@ public class TaskListController implements TaskListApi {
                     .collect(Collectors.toList()))
                 .build();
         result.setTotal(pageResult.getTotalElements());
-        result.setPages(pageResult.getTotalPages());
+        result.setTotalPages(pageResult.getTotalPages());
 
         return ResponseEntity.ok().body(result);
     }

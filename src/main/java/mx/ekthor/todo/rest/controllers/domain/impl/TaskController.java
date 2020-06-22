@@ -65,7 +65,7 @@ public class TaskController implements TaskApi{
                     .collect(Collectors.toList()))
             .build();
         result.setTotal(pageResult.getTotalElements());
-        result.setPages(pageResult.getTotalPages());
+        result.setTotalPages(pageResult.getTotalPages());
         
         return ResponseEntity.ok().body(result);
     }
